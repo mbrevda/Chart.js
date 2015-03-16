@@ -37,8 +37,8 @@
 			}
 		}
 
-		var width = this.width = computeDimension(context.canvas,'Width');
-		var height = this.height = computeDimension(context.canvas,'Height');
+		var width = this.width = computeDimension(context.canvas,'Width') || context.canvas.width;
+		var height = this.height = computeDimension(context.canvas,'Height') || context.canvas.height;
 
 		// Firefox requires this to work correctly
 		context.canvas.width  = width;
@@ -2604,6 +2604,10 @@
 					label : dataset.label || null,
 					fillColor : dataset.fillColor,
 					strokeColor : dataset.strokeColor,
+					strokeShadowOffsetX: dataset.strokeShadowOffsetX || 0,
+					strokeShadowOffsetY: dataset.strokeShadowOffsetY || 0,
+					strokeShadowBlur: dataset.strokeShadowBlur || 0,
+					strokeShadowColor: dataset.strokeShadowColor || 'rgba(0, 0, 0, 0)',
 					pointColor : dataset.pointColor,
 					pointStrokeColor : dataset.pointStrokeColor,
 					points : []
@@ -2784,6 +2788,10 @@
 			helpers.each(this.datasets,function(dataset){
 				var pointsWithValues = helpers.where(dataset.points, hasValue);
 
+				ctx.shadowOffsetX = dataset.strokeShadowOffsetX;
+				ctx.shadowOffsetY = dataset.strokeShadowOffsetY;
+				ctx.shadowBlur = dataset.strokeShadowBlur;
+				ctx.shadowColor = dataset.strokeShadowColor;
 				//Transition each point first so that the line and point drawing isn't out of sync
 				//We can use this extra loop to calculate the control points of this dataset also in this loop
 
@@ -2795,6 +2803,7 @@
 						}, easingDecimal);
 					}
 				},this);
+
 
 
 				// Control points need to be calculated in a seperate loop, because we need to know the current x/y of the point
